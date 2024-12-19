@@ -1,0 +1,26 @@
+.avatar-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto;
+    border: 2px solid #f79530;
+    position: relative; /* Make the container a positioning context */
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: grab;
+    position: absolute; /* Allow the image to be positioned relative to its container */
+    left: 0;
+    top: 0;
+}
+
+.avatar-image.dragging {
+    cursor: grabbing;
+}

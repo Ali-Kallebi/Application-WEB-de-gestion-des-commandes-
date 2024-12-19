@@ -1,0 +1,64 @@
+<div class="layout-topbar" (click)="onTopbarClick($event)">
+    <a class="layout-topbar-logo" routerLink="">
+        <img src="assets/layout/images/ASM1.jpg" alt="logo">
+        <span>Gestion Des Commandes</span>
+    </a>
+
+    <button #menubutton class="p-link layout-menu-button layout-topbar-button" (click)="layoutService.onMenuToggle()">
+        <i class="pi pi-bars"></i>
+    </button>
+
+    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
+        <i class="pi pi-ellipsis-v"></i>
+    </button>
+
+    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}" >
+        <button class="p-link layout-topbar-button">
+            <i class="pi pi-calendar" (click)="redirectTocalender()"></i>
+            <span>Calendar</span>
+        </button>
+        
+        <button class="p-link layout-topbar-button" (click)="toggleUserMenu()">
+            <i class="pi pi-user"></i>
+            <span>Profile</span>
+        </button>
+       
+    </div>
+
+    <div #userMenu class="user-menu" [ngClass]="{'user-menu-active': userMenuVisible}">
+        <div class="wrapper">
+            <header>{{ userEmail }}</header>
+            <form action="#">
+                <div class="field email">
+                    <div class="input-area">
+                        <!-- Conteneur pour l'image avec une taille fixe -->
+                        <div style="display: flex; justify-content: center; align-items: center; height: 200px;">
+                            <img [src]="avatarUrl" alt="avatar" style="width: 150px; height: 150px; border-radius: 70%; object-fit: cover; border: 2px solid #f79530;" *ngIf="avatarUrl">
+                        </div>
+                        <i class="icon fas fa-envelope"></i>
+                        <i class="error error-icon fas fa-exclamation-circle"></i>
+                    </div>
+                </div>
+                <div class="field password">
+                    <div class="input-area">
+                        <!-- Ajustez la taille de cette section pour éviter que l'email soit caché -->
+                        <div style="font-style: italic; justify-content: center; align-items: center; color: rgb(0, 0, 0); font-size: 20px; margin-top: 10px; text-align: center;">
+                            Bonjour {{ usernom }} {{ userprenom }}
+                        </div>                        
+                    </div>
+                    <p></p>
+                    <div style="text-align: center; cursor: pointer;">
+                        <span type="text" pInputText pTooltip="Enter your username" tooltipPosition="top" placeholder="Top" style="color: rgb(0, 0, 0);" (click)="redirectToForgotPassword()">Gérer votre compte</span>
+                    </div>
+                    <p></p>
+                    <div class="button-container" style="text-align: center; cursor: pointer;">
+                        <button class="p-link layout-topbar-button custom-button" (click)="logout()">
+                            <i class="pi pi-fw pi-sign-out"></i>
+                            <p>Déconnexion</p>
+                        </button>
+                    </div>
+                </div>                 
+            </form>
+        </div>
+    </div>
+    

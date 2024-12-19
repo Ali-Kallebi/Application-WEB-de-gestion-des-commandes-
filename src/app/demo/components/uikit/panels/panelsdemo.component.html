@@ -1,0 +1,55 @@
+<div class="surface-0 flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden">
+    <div class="grid justify-content-center p-2 lg:p-0" style="min-width:80%">
+        <div class="col-12 mt-5 xl:mt-0 text-center">
+            <img src="assets/demo/images/access/logo-orange.svg" alt="Sakai logo" class="mb-5" style="width:81px; height:60px;">
+        </div>
+        <div class="col-12 xl:col-6" style="border-radius:56px; padding:0.3rem; background: linear-gradient(180deg, rgba(247, 149, 48, 0.4) 10%, rgba(247, 149, 48, 0) 30%);">
+            <div class="h-full w-full m-0 py-7 px-4" style="border-radius:53px; background: linear-gradient(180deg, var(--surface-50) 38.9%, var(--surface-0));">
+                <div class="text-center mb-5">
+                    <div class="text-900 text-3xl font-medium mb-3">Mot de passe oublié</div>
+                    <span class="text-600 font-medium">Entrez votre email pour réinitialiser votre mot de passe</span>
+                </div>
+          
+                <div *ngIf="errorMessage" class="text-red-600 text-center mb-3">
+                    {{ errorMessage }}
+                </div>
+          
+                <div *ngIf="successMessage" class="text-green-600 text-center mb-3">
+                    {{ successMessage }}
+                </div>
+          
+                <form (ngSubmit)="onSubmit()" #resetPasswordForm="ngForm" class="w-full md:w-10 mx-auto">
+                    <input type="hidden" name="token" [(ngModel)]="token"> 
+                    <div class="form-group">
+                        <label for="email" class="block text-900 text-xl font-medium mb-2">Email</label>
+                        <!-- Afficher l'e-mail de l'utilisateur connecté en lecture seule -->
+                        <input type="email" name="email" id="email" pInputText [(ngModel)]="userEmail" class="w-full md:w-10 mx-auto p-3 mb-3" readonly>
+                    </div>
+                </form>
+                <!-- Form for Avatar Upload -->
+                <form (ngSubmit)="onSubmit()">
+                    <div class="text-center">
+                        <label for="avatar" class="block text-900 text-xl font-medium mb-2">Avatar</label>
+                        <div class="avatar-preview mb-3 image-container">
+                            <img [src]="avatarPreview" alt="Avatar Preview" class="avatar-image" id="draggable-image">
+                        </div>
+                        <p-fileUpload
+                        mode="basic"
+                        accept="image/jpeg, image/png, image/jpg, image/gif"
+                        [maxFileSize]="1000000"
+                        label="Import"
+                        chooseLabel="Import"
+                        class="mr-2 inline-block"
+                        (onSelect)="onImageSelect($event)">
+                    </p-fileUpload>
+                    
+                    </div>
+                    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+                    <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+                    <button pButton pRipple icon="pi pi-upload" type="submit" label="Enregistrer" class="p-button-raised p-button-success p-button-text"></button>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>

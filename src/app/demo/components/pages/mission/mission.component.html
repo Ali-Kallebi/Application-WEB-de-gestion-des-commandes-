@@ -1,0 +1,155 @@
+<div class="commandes-container">
+  <div class="input-container">
+    <p-orderList [value]="filteredEnCoursCommandes" [listStyle]="{'max-height':'30rem'}" header="Commandes en Cours" filterBy="nomClient" filterPlaceholder="Filtrer par nom">
+      <ng-template let-commande pTemplate="item">
+        <div class="product-item" [ngClass]="{ 'selected': selectedCommande === commande }">
+          <div class="product-list-detail">
+            <h5 class="mb-2">{{ commande.nomClient }} {{ commande.prenomClient }}</h5>
+            <div class="product-price">{{ commande.montant_total | currency: 'DTN':'symbol' }}</div>
+            <div style="font-size: 14px; float: right; margin: 15px 5px 0 0">Date de Livraison: {{ commande.dateLivraison }}</div>
+          </div>
+          <div class="product-list-action">
+            <button pButton type="button" class="action-btn p-button-rounded p-button-secondary" (click)="showCommandeDetails(commande)">
+              <img src="assets/layout/images/P.gif" alt="Loading" style="width: 32px; height: 32px;">
+            </button>
+          </div>
+          <div class="detail-container" *ngIf="selectedCommande === commande">
+            <div class="modal-content">
+              <span class="close" (click)="closeCommandeDetails()">&times;</span>
+              <h3>Détails de la Commande</h3>
+              <div>ID: {{ commande.id }}</div>
+              <div>Nom Client: {{ commande.nomClient }}</div>
+              <div>Prénom Client: {{ commande.prenomClient }}</div>
+              <div>Téléphone Client: {{ commande.telClient }}</div>
+              <div>Email Client: {{ commande.mailClient }}</div>
+              <div>Localisation: {{ commande.localisation }}</div>
+              <div>Date Livraison: {{ commande.dateLivraison }}</div>
+              <div>Produit Commandé: {{ commande.produitCommande }}</div>
+              <div>Montant Total: {{ commande.montant_total | currency: 'EUR':'symbol' }}</div>
+              <div>Statut: {{ commande.status }}</div>
+              <div class="modal" *ngIf="showRejectModal">
+                <div class="modal-content">
+                  <span class="close" (click)="cancelReject()">&times;</span>
+                  <h3>Rejeter la commande</h3>
+                  <textarea [(ngModel)]="rejectionReason" placeholder="Raison du rejet" [rows]="5" [cols]="30" pInputTextarea [autoResize]="true"></textarea>
+                  <p>Date de report:</p>
+                  <p-calendar [(ngModel)]="rejectionDate"  [showTime]="true" [showSeconds]="true"  appendTo="body"></p-calendar>
+                  <button pButton pRipple label="OK" icon="pi pi-check" (click)="rejectCommande()" class="btn-ok"></button>
+                  <button pButton pRipple label="Annuler" icon="pi pi-times" (click)="cancelReject()" class="btn-cancel"></button>                  
+                </div>
+              </div>
+              <div class="action-buttons">
+                <button pButton type="button" label="Terminer" class="action-btn p-button-rounded p-button-primary" (click)="showTermine()"></button>
+                <button pButton type="button" label="Rejeter" class="action-btn p-button-rounded p-button-danger" (click)="showRejectModalWindow()"></button>
+                <button pButton type="button" label="Fermer" class="action-btn p-button-rounded p-button-secondary" (click)="closeCommandeDetails()"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-orderList>
+  </div>
+</div>
+
+<!-- Other HTML content -->
+
+<p-dialog header="Sélectionner les dates" [(visible)]="displayCalendarDialog" [modal]="true" [closable]="false">
+  <div class="p-fluid">
+    <div class="p-field">
+      <label for="dateDebut">Date de début</label>
+      <p-calendar id="dateDebut" [(ngModel)]="dateDebut"  [showTime]="true" [showSeconds]="true"  appendTo="body"></p-calendar>
+    </div>
+    <div class="p-field">
+      <label for="dateFin">Date de fin</label>
+      <p-calendar id="dateFin" [(ngModel)]="dateFin"  [showTime]="true" [showSeconds]="true"  appendTo="body"></p-calendar>
+    </div>
+  </div>
+  <p-footer>
+    <button pButton type="button" label="OK" class="p-button-primary" (click)="terminerCommande()"></button>
+    <button pButton type="button" label="Annuler" class="p-button-secondary" (click)="cancelTermine()"></button>
+  </p-footer>
+</p-dialog>
+
+
+<!-- Other HTML content -->
+
+<!-- Completed orders list -->
+<div class="commandes-container">
+  <div class="input-container">
+    <p-orderList [value]="filteredTermineesCommandes" [listStyle]="{'max-height':'30rem'}" header="Commandes Terminées" filterBy="nomClient" filterPlaceholder="Filtrer par nom">
+      <ng-template let-commande pTemplate="item">
+        <div class="product-item">
+          <div class="product-list-detail">
+            <h5 class="mb-2">{{ commande.nomClient }} {{ commande.prenomClient }}</h5>
+            <div class="product-price">{{ commande.montant_total | currency: 'DTN':'symbol' }}</div>
+            <button pButton type="button" class="action-btn p-button-rounded p-button-secondary" (click)="showCommandeDetails(commande)">
+              Détails
+            </button>
+          </div>
+          <div *ngIf="selectedCommandeDetails && selectedCommandeDetails.id === commande.id">
+            <div class="detail-container">
+              <span class="close" (click)="closeCommandeDetails()">&times;</span>
+              <h3>Détails de la Commande</h3>
+              <div>ID Utilisateur: {{ selectedUserId }}</div>
+              <div>Nom Client: {{ selectedCommandeDetails.nomClient }}</div>
+              <div>Prénom Client: {{ selectedCommandeDetails.prenomClient }}</div>
+              <div>Téléphone Client: {{ selectedCommandeDetails.telClient }}</div>
+              <div>Email Client: {{ selectedCommandeDetails.mailClient }}</div>
+              <div>Localisation: {{ selectedCommandeDetails.localisation }}</div>
+              <div>Date Livraison: {{ selectedCommandeDetails.dateLivraison }}</div>
+              <div>Produit Commandé: {{ selectedCommandeDetails.produitCommande }}</div>
+              <div>Montant Total: {{ selectedCommandeDetails.montant_total | currency: 'DTN':'symbol' }}</div>
+              <div>Statut: {{ selectedCommandeDetails.status }}</div>
+            </div>
+            <div><button pButton type="button" label="Fermer" class="action-btn p-button-rounded p-button-secondary" (click)="closeCommandeDetails()"></button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-orderList>
+  </div>
+</div>
+
+<!-- Rejected orders list -->
+<div class="commandes-container">
+  <div class="input-container">
+    <p-orderList [value]="filteredRejeteesCommandes" [listStyle]="{'max-height':'30rem'}" header="Commandes Rejetées" filterBy="nomClient" filterPlaceholder="Filtrer par nom">
+      <ng-template let-commande pTemplate="item">
+        <div class="product-item">
+          <div class="product-list-detail">
+            <h5 class="mb-2">{{ commande.nomClient }} {{ commande.prenomClient }}</h5>
+            <div class="product-price">{{ commande.montant_total | currency: 'DTN':'symbol' }}</div>
+            <button pButton type="button" class="action-btn p-button-rounded p-button-secondary" (click)="showCommandeDetails(commande)">
+              Détails
+            </button>
+          </div>
+          <div *ngIf="selectedCommandeDetails && selectedCommandeDetails.id === commande.id">
+            <div class="detail-container">
+              <span class="close" (click)="closeCommandeDetails()">&times;</span>
+              <h3>Détails de la Commande</h3>
+              <div>ID Utilisateur: {{ selectedUserId }}</div>
+              <div>Nom Client: {{ selectedCommandeDetails.nomClient }}</div>
+              <div>Prénom Client: {{ selectedCommandeDetails.prenomClient }}</div>
+              <div>Téléphone Client: {{ selectedCommandeDetails.telClient }}</div>
+              <div>Email Client: {{ selectedCommandeDetails.mailClient }}</div>
+              <div>Localisation: {{ selectedCommandeDetails.localisation }}</div>
+              <div>Date Livraison: {{ selectedCommandeDetails.dateLivraison }}</div>
+              <div>Produit Commandé: {{ selectedCommandeDetails.produitCommande }}</div>
+              <div>Montant Total: {{ selectedCommandeDetails.montant_total | currency: 'EUR':'symbol' }}</div>
+              <div>Statut: {{ selectedCommandeDetails.status }}</div>
+              <div *ngIf="selectedCommandeDetails.status === 'En attente'">
+                <h3>Raison du Rejet</h3>
+                <div>{{ selectedCommandeDetails.rejectionReason }}</div>
+                <div>Date de report: {{ selectedCommandeDetails.rejectionDate }}</div>
+              </div>
+            </div>
+            <div>
+              <button pButton type="button" label="Terminer" class="action-btn p-button-rounded p-button-primary" (click)="showTermine()"></button>
+              <button pButton type="button" label="Fermer" class="action-btn p-button-rounded p-button-secondary" (click)="closeCommandeDetails()"></button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </p-orderList>
+  </div>
+</div>

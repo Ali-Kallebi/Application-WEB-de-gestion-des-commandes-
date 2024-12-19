@@ -1,0 +1,105 @@
+.utilisateur-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    width: 80%;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+}
+
+.utilisateur-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%; /* Pour afficher l'image en cercle */
+    object-fit: cover; /* Pour s'assurer que l'image s'adapte correctement au cercle */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); /* Ajoutez l'ombre si nécessaire */
+    border: 4px solid #8a2be2; /* Bordure mauve */
+}
+
+.utilisateur-detail {
+    flex: 1 1 0;
+    max-width: 50%;
+    padding: 0.5rem;
+}
+
+.utilisateur-action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.utilisateur-category-icon {
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+.utilisateur-category {
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.utilisateur-rank {
+    flex: 0 0 auto; /* Ensure rank doesn't take up all available width */
+    margin-left: auto; /* Position rank to the right */
+}
+
+.rank-color {
+    color: rgb(1, 1, 229); /* Rank color */
+}
+
+.grid {
+    .card {
+        .p-chart {
+            width: 100%;
+            top: 50px;
+            left: 0; /* Ajustez la valeur pour déplacer le diagramme à gauche */
+            transform: translateX(-80px); /* Ajustement supplémentaire pour la position */
+        }
+    }
+}
+
+.drop-column {
+    .drag-button-container {
+        margin-bottom: 1rem;
+        text-align: center; /* Center align the button horizontally */
+    }
+    
+    p-table {
+        margin-left: 0; /* Remove default left margin */
+        width: 100%; /* Ajustez la largeur de la table */
+        position: relative;
+        left: 0; /* Ajustez la valeur pour déplacer la table à gauche */
+        transform: translateX(-90px); /* Ajustement supplémentaire pour la position */
+        top: 5px;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .utilisateur-item {
+        flex-wrap: wrap;
+
+        .image-container {
+            width: 100%;
+            text-align: center;
+        }
+        
+        .utilisateur-image {
+            width: 100px; /* Ajustez la taille de l'image pour les écrans plus petits si nécessaire */
+            height: 100px; /* Ajustez la taille de l'image pour les écrans plus petits si nécessaire */
+            border: 4px solid #8a2be2; /* Bordure mauve pour les écrans plus petits */
+        }
+
+        img {
+            margin: 0 0 1rem 0;
+            width: 100px;
+        }
+
+        .utilisateur-detail, .utilisateur-action {
+            width: 100%;
+            text-align: center;
+        }
+    }
+}

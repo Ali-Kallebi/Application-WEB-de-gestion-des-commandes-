@@ -1,0 +1,166 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card px-6 py-6">
+            <p-toast></p-toast>
+            <p-toolbar styleClass="mb-4">
+                <ng-template pTemplate="left">
+                    <div class="my-2">
+                        <button *ngIf="role === 'RH'" pButton pRipple label="Nouveau" icon="pi pi-plus" class="p-button-success mr-2" (click)="openNew()"></button>
+                        
+                        <button *ngIf="role === 'RH'" pButton pRipple label="Supprimer" icon="pi pi-trash" class="p-button-danger" (click)="deleteUsersDialog = true" [disabled]="!selectedUsers || !selectedUsers.length"></button>
+                        
+
+                    </div>
+                </ng-template>
+            </p-toolbar>
+
+            <p-table #dt [value]="users" [columns]="cols" responsiveLayout="scroll" [rows]="10" [globalFilterFields]="['id', 'nom', 'prenom', 'email', 'specialite', 'localisation']" [rows]="10" [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [(selection)]="selectedUsers" selectionMode="multiple" [rowHover]="true" dataKey="id">
+                <ng-template pTemplate="caption">
+                    <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
+                        <h5 class="m-0">Liste Utilisateurs</h5>
+                        <span class="block mt-2 md:mt-0 p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..."  class="w-full sm:w-auto"/>
+                        </span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 3rem">
+                            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                        </th>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="nom">Nom <p-sortIcon field="nom"></p-sortIcon></th>
+                        <th pSortableColumn="prenom">Prenom <p-sortIcon field="prenom"></p-sortIcon></th>
+                        <th pSortableColumn="email">Mail <p-sortIcon field="email"></p-sortIcon></th>
+                        <th pSortableColumn="tel">Tel <p-sortIcon field="tel"></p-sortIcon></th>
+                        <th pSortableColumn="specialite">Specialite <p-sortIcon field="specialite"></p-sortIcon></th>
+                        <th pSortableColumn="localisation">Localisation <p-sortIcon field="localisation"></p-sortIcon></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-user>
+                    <tr>
+                        <td>
+                            <p-tableCheckbox [value]="user"></p-tableCheckbox>
+                        </td>
+                        <td style="width:14%; min-width:10rem;"><span class="p-column-title">ID</span>
+                            {{user.id}}
+                        </td>
+                        <td style="width:14%; min-width:10rem;">
+                            <span class="p-column-title">Nom</span>
+                            {{user.nom}}
+                        </td>
+                        <td style="width:18%; min-width:10rem;"><span class="p-column-title">Prenom</span>
+                            {{user.prenom}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Mail</span>
+                            {{user.email}}
+                        </td>
+                        <td style="width:14%; min-width:8rem;">
+                            <span class="p-column-title">Tel</span>
+                            {{user.tel}}
+                        </td>
+                        <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Specialite</span>
+                            <span>{{user.specialite }}</span>
+                        </td>
+                        
+                        <td style="width:14%; min-width: 10rem;"><span class="p-column-title">Localisation</span>
+                            <span >{{user.localisation}}</span>
+                        </td>
+                        
+                        <td>
+                            <div class="flex">
+                                <button *ngIf="role === 'RH'" pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editUser(user)"></button>
+                                <button *ngIf="role === 'RH'" pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteUser(user)"></button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+   <!-- ... (unchanged code) ... -->
+
+   <p-dialog [(visible)]="userDialog" [style]="{width: '450px'}" header="Détails de l'utilisateur" [modal]="true" class="p-fluid">
+    <ng-template pTemplate="content">
+        <div class="field">
+            <label for="nom">Nom</label>
+            <input type="text" pInputText id="nom" [(ngModel)]="user.nom" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !user.nom}"/>
+            <small class="ng-dirty ng-invalid error-message" *ngIf="submitted && !user.nom">Nom est obligatoire et doit contenir uniquement des lettres.</small>
+        </div>
+
+        <div class="field">
+            <label for="prenom">Prénom</label>
+            <input type="text" pInputText id="prenom" [(ngModel)]="user.prenom" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !user.prenom}"/>
+            <small class="ng-dirty ng-invalid error-message" *ngIf="submitted && !user.prenom">Prénom est obligatoire et doit contenir uniquement des lettres.</small>
+        </div>
+
+        <div class="field">
+            <label for="email">Mail</label>
+            <input type="text" pInputText id="email" [(ngModel)]="user.email" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !user.email}"/>
+            <small class="ng-dirty ng-invalid error-message" *ngIf="submitted && !user.email">Mail est obligatoire et doit être au format exemple@domaine.com.</small>
+        </div>
+        
+        <div class="field">
+            <label for="tel">Téléphone</label>
+            <input type="text" pInputText id="tel" [(ngModel)]="user.tel" required autofocus 
+       [ngClass]="{'ng-invalid ng-dirty' : submitted && !user.tel}"
+       (keypress)="handleKeyPress($event)"/>
+            <small class="ng-dirty ng-invalid error-message" *ngIf="submitted && !user.tel">Téléphone est obligatoire et doit contenir 8 chiffres.</small>
+        </div>
+
+        <!-- Les autres champs sont inchangés -->
+
+        <div class="field">
+            <label for="specialite">Spécialité</label>
+            <p-dropdown id="specialite" [options]="specialiteOptions" optionLabel="label" [(ngModel)]="user.specialite" placeholder="Sélectionner une Spécialité" optionValue="value">
+            </p-dropdown>
+            <small class="ng-dirty ng-invalid error-message" *ngIf="submitted && !user.specialite">Spécialité est obligatoire.</small>
+        </div>
+        
+        <div class="field">
+            <label for="localisation">Localisation</label>
+            <p-dropdown id="localisation" [options]="localisationOptions" optionLabel="label" [(ngModel)]="user.localisation" placeholder="Sélectionner une Localisation" appendTo="body" optionValue="value">
+                <ng-template let-localisation pTemplate="item">
+                    <div class="flex align-items-center">
+                        <span>{{localisation.label}}</span>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+            <small class="ng-dirty ng-invalid error-message" *ngIf="submitted && !user.localisation">Localisation est obligatoire.</small>
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <button pButton type="button" label="Annuler" icon="pi pi-times" (click)="hideUserDialog()"></button>
+        <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="saveUser()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="deleteUserDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span *ngIf="user">Êtes-vous sûr de vouloir supprimer  <b>{{user.nom}}</b>?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Non" (click)="deleteUserDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Oui" (click)="confirmDeleteUser()"></button>
+    </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="deleteUsersDialog" header="Confirm" [modal]="true" [style]="{width:'450px'}">
+    <div class="flex align-items-center justify-content-center">
+        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem"></i>
+        <span>Êtes-vous sûr de vouloir supprimer les utilisateurs sélectionnés ?</span>
+    </div>
+    <ng-template pTemplate="footer">
+        <button pButton pRipple icon="pi pi-times" class="p-button-text" label="Non" (click)="deleteUsersDialog = false"></button>
+        <button pButton pRipple icon="pi pi-check" class="p-button-text" label="Oui" (click)="confirmDeleteSelectedUsers()"></button>
+    </ng-template>
+</p-dialog>
+
+</div>
+</div>
+

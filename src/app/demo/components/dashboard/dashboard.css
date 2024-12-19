@@ -1,0 +1,35 @@
+.clickable-icon {
+    cursor: pointer;
+}
+
+.clickable-icon:hover {
+    color: #0044cc; /* Changer la couleur au survol si nécessaire */
+}
+.custom-input {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.custom-input .icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.custom-input input[type="text"] {
+    padding: 10px 10px 10px 30px; /* Ajustez le padding comme nécessaire */
+    border: 1px solid #ccc; /* Couleur de la bordure */
+    border-radius: 5px; /* Arrondi des coins */
+    width: calc(100% - 40px); /* Largeur de l'entrée de texte - ajustez selon l'icône */
+}
+
+.custom-input input[type="text"]:focus {
+    outline: none;
+    border-color: #007bff; /* Couleur de la bordure lorsque l'entrée est en focus */
+}
+
+.custom-input .icon i {
+    color: #666; /* Couleur de l'icône */
+}

@@ -1,0 +1,146 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <p-table
+        #dt
+        *ngIf="orders$ | async as orders"
+        [value]="orders"
+        responsiveLayout="scroll"
+        [rows]="10"
+        [paginator]="true"
+        [globalFilterFields]="['id', 'nomClient', 'prenomClient', 'telClient', 'mailClient', 'localisation', 'dateLivraison', 'produitCommande', 'montant_total', 'status']"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [(selection)]="selectedOrder"
+        [rowHover]="true"
+        dataKey="id"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true"
+      >
+        <ng-template pTemplate="caption">
+          <div class="flex align-items-center justify-content-between">
+            <h5 class="m-0">Liste des Commandes</h5>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search"></i>
+              <input pInputText type="text" (input)="onFilterInput($event)" placeholder="Recherche..." />
+            </span>
+          </div>
+        </ng-template>
+        
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="min-width: 10rem">ID</th>
+            <th style="min-width: 10rem">Nom Client</th>
+            <th style="min-width: 10rem">Prénom Client</th>
+            <th style="min-width: 10rem">Tel Client</th>
+            <th style="min-width: 10rem">Mail Client</th>
+            <th style="min-width: 10rem">Localisation</th>
+            <th style="min-width: 10rem">Date Livraison</th>
+            <th style="min-width: 10rem">Produit Commandé</th>
+            <th style="min-width: 10rem">Montant Total</th>
+            <th style="min-width: 10rem">Statut</th>
+            <th style="min-width: 10rem">Actions</th>
+            <th style="width:12%">
+              <div class="flex justify-content-center align-items-center">
+                Vérifié
+                <p-columnFilter #verifiedColumnFilter type="custom" field="verified" display="menu">
+                  <ng-template pTemplate="filter" let-value let-filterCallback="filterCallback">
+                    <img src="assets/layout/images/x.png" style="width: 32px; height: 32px;" (click)="applyFilter('En attente', filterCallback, verifiedColumnFilter)">
+                    <img src="assets/layout/images/g2.gif" style="width: 32px; height: 32px;" alt="Loading"(click)="applyFilter('En cours', filterCallback, verifiedColumnFilter)">
+                    <img src="assets/layout/images/v.png" style="width: 32px; height: 32px;"  (click)="applyFilter('Terminé', filterCallback, verifiedColumnFilter)">
+                    <img src="assets/layout/images/t.png" style="width: 32px; height: 32px;" (click)="resetAndCloseFilter('status', filterCallback, verifiedColumnFilter)">
+                  </ng-template>
+                </p-columnFilter>
+              </div>
+            </th>
+            
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-order>
+          <tr>
+           
+            <td>{{ order.id }}</td>
+            <td>{{ order.nomClient }}</td>
+            <td>{{ order.prenomClient }}</td>
+            <td>{{ order.telClient }}</td>
+            <td>{{ order.mailClient }}</td>
+            <td>{{ order.localisation }}</td>
+            <td>{{ order.dateLivraison }}</td>
+            <td>{{ order.produitCommande }}</td>
+            <td>{{ order.montant_total | currency: 'DTN':'symbol' }}</td>
+            <td>
+              <div class="field">
+                <p-dropdown
+                  id="statusDropdown"
+                  [options]="statuses"
+                  optionLabel="label"
+                  [(ngModel)]="order.status"
+                  (ngModelChange)="onStatusChange(order)"
+                  placeholder="{{ order.status }}"
+                  appendTo="body"
+                >
+                <ng-template let-status pTemplate="item">
+                  <span [style.color]="status === 'En attente' ? 'red' : (status === 'En cours' ? 'orange' : 'green')">
+                    {{ status }}
+                  </span>
+                </ng-template>
+                </p-dropdown>
+              </div>
+            </td>
+            <td>
+              <button pButton label="Affecter" (click)="showOrderDetails(order)" class="p-button-rounded p-button-success"></button>
+            </td>
+            <td>
+              <ng-container *ngIf="order.status === 'En attente'">
+                <img src="assets/layout/images/x.png" style="width: 32px; height: 32px;" alt="non-vérifier">
+              </ng-container>
+              <ng-container *ngIf="order.status === 'En cours'">
+                <img src="assets/layout/images/g2.gif" style="width: 32px; height: 32px;" alt="Loading">
+
+              </ng-container>
+              <ng-container *ngIf="order.status === 'Terminé'">
+                <img src="assets/layout/images/v.png" style="width: 32px; height: 32px;" alt="Vérifier">
+              </ng-container>
+            </td>
+            
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+          <tr>
+            <td colspan="8" class="text-right">Totals</td>
+            <td>{{ summaryData.totalMontantCommandes }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10">Aucune commande trouvée.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<p-dialog [(visible)]="commandeDialog" [style]="{ width: '600px' }" header="Affectation des commandes" [modal]="true" class="p-fluid">
+  <ng-template pTemplate="body">
+    <div>
+      <label for="description">Description:</label>
+      <textarea id="description" [(ngModel)]="description" name="description" style="width: 100%; height: 200px; padding: 10px;"></textarea>
+      <label for="selectedDate">Date et heure:</label>
+      <p-calendar id="selectedDate" [(ngModel)]="date_affecte" [showTime]="true" [showSeconds]="true" appendTo="body"></p-calendar>
+      <label for="usersDropdown">Utilisateurs :</label>
+      <p-dropdown
+        id="usersDropdown"
+        [options]="usersDropdownOptions"
+        [(ngModel)]="selectedUser"
+        [filter]="true"
+        optionLabel="label"
+        placeholder="Sélectionner un utilisateur"
+        appendTo="body"
+      ></p-dropdown>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="footer">
+    <button pButton type="button" label="Annuler" (click)="cancelAffectation()"></button>
+    <button pButton type="button" label="Affecter" class="p-button-success" (click)="affecterCommande()"></button>
+  </ng-template>
+</p-dialog>

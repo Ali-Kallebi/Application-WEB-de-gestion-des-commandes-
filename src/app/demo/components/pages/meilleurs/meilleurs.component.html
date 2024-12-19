@@ -1,0 +1,59 @@
+<div class="grid">
+    <div class="col-12 md:col-6 drag-column">
+        <div *ngFor="let user of users" class="utilisateur-item" pDraggable="user" (onDragStart)="dragStart(user)" (onDragEnd)="dragEnd()">
+            <div class="image-container">
+                <img [src]="user.avatar ? 'http://127.0.0.1:8000/avatars/' + user.avatar : 'assets/layout/images/user.gif'" [alt]="user.name" class="utilisateur-image" />
+            </div>
+            <div class="utilisateur-detail">
+                <h5 class="mb-2">{{ user.nom }} {{ user.prenom }}</h5>
+                <i class="pi pi-tag utilisateur-category-icon"></i>
+                <span class="utilisateur-category">{{ user.specialite }}</span>
+            </div>
+            <div class="utilisateur-action">
+                <h6 class="mb-2">{{ user.tel }}</h6>
+                <span class="'utilisateur-badge status-' + user.inventoryStatus.toLowerCase()">{{ user.localisation }}</span>
+            </div>
+            <div class="utilisateur-rank">
+                <span class="rank-color">{{ user.rank }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 md:col-6 drop-column" pDroppable="user" (onDrop)="drop($event)">
+        <div class="drag-button-container">
+            <button *ngIf="role === 'RH'"  pButton pRipple type="button" icon="pi pi-check" label="Envoyer Mail" class="p-button-success drag-button" (click)="sendMeilleurOuvrierEmail()"></button>
+        </div>
+        <p-table [value]="selectedUsers">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Rang</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Spécialité</th>
+                    <th>Téléphone</th>
+                    <th>Localisation</th>
+                    <th>Commandes Terminé</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user>
+                <tr>
+                    <td>{{ user.rank }}</td>
+                    <td>{{ user.nom }}</td>
+                    <td>{{ user.prenom }}</td>
+                    <td>{{ user.specialite }}</td>
+                    <td>{{ user.tel }}</td>
+                    <td>{{ user.localisation }}</td>
+                    <td>{{ user.nombreCommandesTerminees }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+        <div class="grid p-chart">
+            <div class="col-12">
+                <div class="card">
+                    <h5>Graphique linéaire</h5>
+                    <p-chart type="line" [data]="lineData" [options]="lineOptions" [style]="{'width': '100%'}"></p-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
